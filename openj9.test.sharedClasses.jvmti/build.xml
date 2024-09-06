@@ -81,8 +81,8 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0-only WITH Classpath-ex
 
 	<target name="setup-native-build-command">
 		<echo message="building natives for java-platform ${java_platform}"/>
-		<property name="openj9_test_sharedClasses_jvmti_native_build_command" value='${setup_windows_build_env}${MAKE} -C ${openj9_test_sharedClasses_jvmti_native_src_dir} SRCDIR=${openj9_test_sharedClasses_jvmti_native_src_dir} JAVA_HOME=${java_home} OUTDIR=${openj9_test_sharedClasses_jvmti_native_bin_dir}'/>
-		<tempfile property="openj9_test_sharedClasses_jvmti_native_build_command_file" destDir="${java.io.tmpdir}" prefix="openj9.build.command."/>
+		<property name="openj9_test_sharedClasses_jvmti_native_build_command" value='${openj9_test_sharedClasses_jvmti_native_src_dir} SRCDIR=${openj9_test_sharedClasses_jvmti_native_src_dir} JAVA_HOME=${java_home} OUTDIR=${openj9_test_sharedClasses_jvmti_native_bin_dir}'/>
+		<!--tempfile property="openj9_test_sharedClasses_jvmti_native_build_command_file" destDir="${java.io.tmpdir}" prefix="openj9.build.command."/-->
 	</target>
 
 	<target name="build-natives-windows" if="${windows_native_compiler_present}">
@@ -95,10 +95,11 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0-only WITH Classpath-ex
 	<target name="build-natives-unix" unless="${is_windows}">
 		<echo message="${openj9_test_sharedClasses_jvmti_native_build_command}"/>
 		<echo message="${openj9_test_sharedClasses_jvmti_native_build_command}" file="${openj9_test_sharedClasses_jvmti_native_build_command_file}.sh"/>
-		<exec executable="/bin/sh" failonerror="true">
-			<arg value="${openj9_test_sharedClasses_jvmti_native_build_command_file}.sh"/>
+		<exec executable="make" failonerror="true">
+			<arg value="-C" />
+			<arg line="${openj9_test_sharedClasses_jvmti_native_build_command}"/>
 		</exec>
-		<delete file="${openj9_test_sharedClasses_jvmti_native_build_command_file}.sh" verbose="true"/>
+		<!--delete file="${openj9_test_sharedClasses_jvmti_native_build_command_file}.sh" verbose="true"/-->
 	</target>
 
 	<target name="build-archives" depends="build-jar">
