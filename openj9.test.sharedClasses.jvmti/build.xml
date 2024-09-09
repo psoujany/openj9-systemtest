@@ -94,7 +94,7 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0-only WITH Classpath-ex
 
 	<target name="build-natives-unix" unless="${is_windows}">
 		<echo message="${openj9_test_sharedClasses_jvmti_native_build_command}"/>
-		<echo message="${openj9_test_sharedClasses_jvmti_native_build_command}" file="${openj9_test_sharedClasses_jvmti_native_build_command_file}.sh"/>
+		<!--echo message="${openj9_test_sharedClasses_jvmti_native_build_command}" file="${openj9_test_sharedClasses_jvmti_native_build_command_file}.sh"/-->
 		<exec executable="make" failonerror="true">
 			<arg value="-C" />
 			<arg line="${openj9_test_sharedClasses_jvmti_native_build_command}"/>
