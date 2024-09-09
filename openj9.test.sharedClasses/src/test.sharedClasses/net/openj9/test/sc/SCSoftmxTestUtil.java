@@ -22,7 +22,11 @@
 package net.openj9.test.sc;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.Writer;
+import java.nio.charset.Charset;
 import java.util.Scanner;
 
 import net.adoptopenjdk.stf.StfException;
@@ -62,7 +66,7 @@ public class SCSoftmxTestUtil {
 
 			System.out.println(output.toString());
 
-			PrintWriter pw = new PrintWriter(combinedFile); 
+			Writer pw = new OutputStreamWriter(new FileOutputStream(combinedFile), Charset.forName("IBM-1047"));
 			pw.write(output.toString());
 			pw.flush();
 			pw.close();
