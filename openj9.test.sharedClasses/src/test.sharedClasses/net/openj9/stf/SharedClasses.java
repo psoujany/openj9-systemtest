@@ -23,6 +23,7 @@ package net.openj9.stf;
 
 import static net.adoptopenjdk.stf.extensions.core.StfCoreExtension.Echo.ECHO_ON;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import net.adoptopenjdk.stf.environment.DirectoryRef;
@@ -192,13 +193,15 @@ public class SharedClasses implements SharedClassesPluginInterface {
 		int found = 0;
 		for (int i = 0 ; (i < prereqRoots.size()) && ( found == 0 ); i++ ) {
 			sharedClassesDataDir = prereqRoots.get(i).childDirectory(dataSubdir);
-			if (!sharedClassesDataDir.exists()) {
-				System.out.println(sharedClassesDataDir.getSpec() + " does not exist");
-			}
-			else {
-				System.out.println(sharedClassesDataDir.getSpec() + " exists");
+			FileRef sharedClassesJar = sharedClassesDataDir.childFile("classes.jar");
+			if (sharedClassesJar.exists()) {
+				System.out.println(sharedClassesDataDir.getSpec() + " exists and contains classes.jar");
 				found = 1;
-			}
+				break;
+			} else {
+				System.out.println(sharedClassesDataDir.getSpec() + "/classes.jar does not exist.");
+				deleteDirectory(sharedClassesDataDir.asJavaFile());
+			} 
 		}
 
 		if ( found == 0 ) {
@@ -275,4 +278,23 @@ public class SharedClasses implements SharedClassesPluginInterface {
 		sharedClasses.doDestroySpecificCache("Destroy cache", "-Xshareclasses:name=" + SCSoftmxTestUtil.CACHE_NAME + ",cacheDir=" + cacheDir + "${cacheOperation}", SCSoftmxTestUtil.CACHE_NAME, cacheDir);
 		sharedClasses.doDestroySpecificNonPersistentCache("Destroy cache", "-Xshareclasses:name=" + SCSoftmxTestUtil.CACHE_NAME + ",cacheDir=" + cacheDir + "${cacheOperation}", SCSoftmxTestUtil.CACHE_NAME, cacheDir);
 	}
+
+	public void deleteDirectory(File directory) {
+		if (directory.exists()) {
+			File[] files = directory.listFiles();
+			if (files != null) {
+				for (File file : files) {
+					if (file.isDirectory()) {
+						deleteDirectory(file);
+					} else {
+						file.delete(); 
+					}
+				}
+			}
+			directory.delete(); 
+		} else {
+			System.out.println("Directory does not exist: " + directory.getAbsolutePath());
+		}
+	}
+	
 }
